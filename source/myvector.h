@@ -8,7 +8,7 @@ private:
 	size_t m_capacity;
 
 public:
-	myVector() : m_data(nullptr), m_size(NULL), m_capacity(NULL) {}
+	myVector() : m_data(nullptr), m_size(0), m_capacity(0) {}
 
 	explicit myVector(size_t size) : m_data(new T[size]), m_size(size), m_capacity(size) {}
 

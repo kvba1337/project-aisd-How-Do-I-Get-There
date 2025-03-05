@@ -28,7 +28,7 @@ void PriorityQueue::heapify_down(int index) {
 	if (rightIndex < (int)heap.size() && heap[rightIndex].neighborFieldDistance < heap[smallestIndex].neighborFieldDistance) {
 		smallestIndex = rightIndex;
 	}
-	
+
 	// if the smallest index is not the current index, swap the elements and heapify down the smallest index
 	if (smallestIndex != index) {
 		FieldDistancePair tmp = heap[index];

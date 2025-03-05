@@ -179,7 +179,7 @@ void dijkstraSearch(myVector<myVector<FieldDistancePair>>& graph, myVector<Field
 		shortestRoute[i].previousFieldIndex = UNDEFINED;
 		shortestRoute[i].isVisited = false;
 	}
-	
+
 	shortestRoute[sourceCityIndex].distance = INITIAL_DISTANCE;
 
 	// initialize priority queue
@@ -190,7 +190,7 @@ void dijkstraSearch(myVector<myVector<FieldDistancePair>>& graph, myVector<Field
 	while (!Q.isEmpty()) {
 		int currentFieldIndex = Q.top().fieldIndex;
 		Q.pop();
-		
+
 		if (!shortestRoute[currentFieldIndex].isVisited) {
 			shortestRoute[currentFieldIndex].isVisited = true;
 
@@ -223,7 +223,7 @@ myVector<int> findRouteIndexes(myVector<FieldDijkstra>& shortestRoute, myVector<
 }
 
 void printOutput(myVector<FieldDijkstra>& shortestRoute, myVector<myString>& cityNames, int sourceCityIndex, int destinationCityIndex, bool queryType) {
-	cout << shortestRoute[destinationCityIndex].distance << " ";
+	cout << shortestRoute[destinationCityIndex].distance;
 
 	// if query type is 1, print the route in the output
 	if (queryType) {
@@ -231,9 +231,15 @@ void printOutput(myVector<FieldDijkstra>& shortestRoute, myVector<myString>& cit
 
 		findRouteIndexes(shortestRoute, routeIndexes, sourceCityIndex, destinationCityIndex);
 
+		bool firstCity = true;
 		for (int i = routeIndexes.size() - 1; i > 0; i--) {
 			if ((int)cityNames.size() > routeIndexes[i] && !cityNames[routeIndexes[i]].isEmpty()) {
-				cout << cityNames[routeIndexes[i]] << " ";
+				if (firstCity) {
+					cout << " " << cityNames[routeIndexes[i]];
+					firstCity = false;
+				} else {
+					cout << " " << cityNames[routeIndexes[i]];
+				}
 			}
 		}
 	}

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <cstring>
 #include "consts.h"
 
 class myString {
@@ -8,15 +9,15 @@ private:
 	size_t size;
 
 public:
-	myString() : data(nullptr), size(NULL) {}
+	myString() : data(nullptr), size(0) {}
 
-	myString(const char* str) : data(nullptr), size(NULL) {
+	myString(const char* str) : data(nullptr), size(0) {
 		size = strlen(str);
 		data = new char[size + 1];
 		strcpy(data, str);
 	}
 
-	myString(const myString& other) : data(nullptr), size(NULL) {
+	myString(const myString& other) : data(nullptr), size(0) {
 		size = other.size;
 		data = new char[size + 1];
 		strcpy(data, other.data);
