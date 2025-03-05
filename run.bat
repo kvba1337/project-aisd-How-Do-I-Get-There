@@ -2,12 +2,19 @@
 setlocal enabledelayedexpansion
 
 :: Set paths
-set SOURCE_DIR=source
+set SOURCE_DIR=src
 set TEST_DIR=tests
-set EXECUTABLE=program.exe
+set EXECUTABLE=jakdojade.exe
 
-:: Compile the program
-g++ -std=c++11 %SOURCE_DIR%\main.cpp %SOURCE_DIR%\functions.cpp %SOURCE_DIR%\priorityqueue.cpp -o %EXECUTABLE%
+:: Compile
+g++ -std=c++11 %SOURCE_DIR%\main.cpp ^
+   %SOURCE_DIR%\board\board.cpp ^
+   %SOURCE_DIR%\city\city.cpp ^
+   %SOURCE_DIR%\graph\graph.cpp ^
+   %SOURCE_DIR%\algorithms\dijkstra.cpp ^
+   %SOURCE_DIR%\input_output\input_output.cpp ^
+   %SOURCE_DIR%\data_structures\priority_queue.cpp -o %EXECUTABLE%
+
 if %ERRORLEVEL% neq 0 (
     echo Compilation failed!
     exit /b 1
@@ -30,13 +37,11 @@ for /l %%i in (0, 1, 13) do (
     set INPUT_FILE=%TEST_DIR%\!TEST_NUM!.in
     set OUTPUT_FILE=%TEST_DIR%\!TEST_NUM!.out
 
-    :: Check if input file exists
     if not exist !INPUT_FILE! (
         echo Test !TEST_NUM!: Input file !INPUT_FILE! not found!
         continue
     )
 
-    :: Check if output file exists
     if not exist !OUTPUT_FILE! (
         echo Test !TEST_NUM!: Expected output file !OUTPUT_FILE! not found!
         continue
@@ -44,7 +49,6 @@ for /l %%i in (0, 1, 13) do (
 
     %EXECUTABLE% < !INPUT_FILE! > %TEMP_OUTPUT%
 
-    :: Compare output with expected output
     fc %TEMP_OUTPUT% !OUTPUT_FILE! > nul
     if !ERRORLEVEL! equ 0 (
         echo Test !TEST_NUM!: PASSED
@@ -52,11 +56,9 @@ for /l %%i in (0, 1, 13) do (
     ) else (
         echo Test !TEST_NUM!: FAILED
 
-        :: Split each file into individual lines
         if exist %EXPECTED_LINES% del %EXPECTED_LINES%
         if exist %ACTUAL_LINES% del %ACTUAL_LINES%
 
-        :: Create files with one line per file for easier comparison
         for /f "tokens=*" %%a in (!OUTPUT_FILE!) do (
             echo %%a>> %EXPECTED_LINES%
         )
@@ -65,7 +67,6 @@ for /l %%i in (0, 1, 13) do (
             echo %%a>> %ACTUAL_LINES%
         )
 
-        :: Count lines in each file
         set /a expectedLines=0
         for /f %%a in ('type %EXPECTED_LINES% ^| find /c /v ""') do set expectedLines=%%a
 
@@ -75,12 +76,10 @@ for /l %%i in (0, 1, 13) do (
         echo.
         echo Differences in Test !TEST_NUM!:
 
-        :: Compare lines
         set /a maxLines=!expectedLines!
         if !actualLines! GTR !expectedLines! set /a maxLines=!actualLines!
 
         for /l %%l in (1,1,!maxLines!) do (
-            :: Get expected line
             set "expectedLine="
             if %%l LEQ !expectedLines! (
                 set /a lineNum=0
@@ -90,7 +89,6 @@ for /l %%i in (0, 1, 13) do (
                 )
             )
 
-            :: Get actual line
             set "actualLine="
             if %%l LEQ !actualLines! (
                 set /a lineNum=0
@@ -100,20 +98,17 @@ for /l %%i in (0, 1, 13) do (
                 )
             )
 
-            :: Only show differences
             if not "!expectedLine!"=="!actualLine!" (
                 echo Line %%l:
                 echo Expected: "!expectedLine!"
                 echo Actual:   "!actualLine!"
                 echo          ^<---- DIFFERENCE DETECTED
 
-                :: Check for numeric differences
                 set "expectedNum="
                 set "actualNum="
                 for /f "tokens=1" %%n in ("!expectedLine!") do set expectedNum=%%n
                 for /f "tokens=1" %%n in ("!actualLine!") do set actualNum=%%n
 
-                :: Try to convert to numbers and compare
                 set "isExpectedNum=0"
                 set "isActualNum=0"
                 for /f "delims=0123456789" %%n in ("!expectedNum!") do if "%%n"=="" set isExpectedNum=1
